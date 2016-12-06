@@ -111,13 +111,71 @@ class Main extends egret.DisplayObjectContainer {
     }
 
 
-
     /**
      * 创建游戏场景
      * Create a game scene
      */
     private createGameScene():void {
+        var stageW:number = this.stage.stageWidth;
+        var stageH:number = this.stage.stageHeight;
         
+        
+        var newMap:MainMap=new MainMap();
+        newMap.x=0;
+        newMap.y=0;
+        this.addChild(newMap);
+
+        var Character:Player=new Player();
+        Character.x=0;
+        Character.y=0;
+        this.addChild(Character);
+
+        var taskService:TaskService=TaskService.getInstance();
+
+        var task_0:Task=new Task("task_0","npc_0","npc_1",Task.ACCEPTABLE,new NPCTalkTaskCondition(),1,"null","task_1");
+
+        var task_1:Task=new Task("task_1","npc_1","npc_1",Task.UNACCEPTALBE,new KillMonsterTaskCondition(),10,"pig_png","null");
+
+        var taskPanel:TaskPanel=new TaskPanel();
+        taskPanel.x=640;
+        taskPanel.y=0;
+        this.addChild(taskPanel);
+
+        var monsterButton:MonsterButton=new MonsterButton("pig_png");
+        monsterButton.x=640;
+        monsterButton.y=500;
+        this.addChild(monsterButton);
+
+        var dialogPanel:DialogPanel=DialogPanel.getInstance();
+        dialogPanel.x=200;
+        dialogPanel.y=200;
+        this.addChild(dialogPanel);
+        dialogPanel.visible=false;
+
+        var npc_0:NPC=new NPC("npc_0","npc_0_png");
+        npc_0.x=128;
+        npc_0.y=128;
+        this.addChild(npc_0);
+
+        var npc_1:NPC=new NPC("npc_1","npc_1_png");
+        npc_1.x=576;
+        npc_1.y=576;
+        this.addChild(npc_1);
+        
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP,(evt:egret.TouchEvent)=>{
+            let startTile: tile = new tile();
+            startTile.x = Math.floor(Character.x / ONETILESIZE);
+            startTile.y = Math.floor(Character.y / ONETILESIZE);
+            let endTile: tile = new tile();
+            endTile.x = Math.floor(evt.stageX / ONETILESIZE);
+            endTile.y = Math.floor(evt.stageY / ONETILESIZE);
+            // console.log("start:("+startTile.x+","+startTile.y+")"+"end:("+endTile.x+","+endTile.y+")");
+            if(newMap.findWay(startTile,endTile)){
+                let path:tile[]=newMap.getPath();
+                Character.Macine.ChangeState(new MoveState(Character,path));
+            }
+        }, this)
+
         var user:User=new User();
         var hero:Hero=new Hero();
         var equipment:Equipment=new Equipment();
@@ -125,10 +183,10 @@ class Main extends egret.DisplayObjectContainer {
         equipment.addJewll(jewll);
         hero.addEquipment(equipment);
         user.addHero(hero);
-        var x= user.getFightPower();
-        console.log(x);
-    }
+        user.getFightPower();
+        user.getFightPower();
 
+    }
 }
 
 

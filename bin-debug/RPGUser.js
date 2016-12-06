@@ -7,12 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var Catche = function (target, propertyName, desc) {
     var method = desc.value;
     desc.value = function () {
-        console.log(target, propertyName, desc);
-        if (target["fightPowerCache"] != null) {
+        console.log(this);
+        if (this["fightPowerCache"] != null && this["dirtyFlag"] == false) {
             return target["fightPowerCache"];
         }
         else {
             console.log("null");
+            this["dirtyFlag"] = false;
+            this["fightPowerCache"] = method.apply(this);
             return method.apply(this);
         }
     };
@@ -24,6 +26,7 @@ var User = (function () {
         this.diomond = 0;
         this.heros = new Array();
         this.fightPowerCache = null;
+        this.dirtyFlag = false;
     }
     var d = __define,c=User,p=c.prototype;
     p.getFightPower = function () {
@@ -36,6 +39,7 @@ var User = (function () {
     };
     p.addHero = function (hero) {
         this.heros.push(hero);
+        this.dirtyFlag = true;
     };
     __decorate([
         Catche
@@ -52,6 +56,7 @@ var Hero = (function () {
         this.totalEXP = 100;
         this.like = false;
         this.equipments = new Array();
+        this.dirtyFlag = false;
     }
     var d = __define,c=Hero,p=c.prototype;
     p.getFightPower = function () {
@@ -65,10 +70,8 @@ var Hero = (function () {
     };
     p.addEquipment = function (e) {
         this.equipments.push(e);
+        this.dirtyFlag = true;
     };
-    __decorate([
-        Catche
-    ], p, "getFightPower", null);
     return Hero;
 }());
 egret.registerClass(Hero,'Hero');
@@ -76,6 +79,7 @@ var Equipment = (function () {
     function Equipment() {
         this.attack = 10;
         this.jewlls = new Array();
+        this.dirtyFlag = false;
     }
     var d = __define,c=Equipment,p=c.prototype;
     p.getFightPower = function () {
@@ -89,10 +93,8 @@ var Equipment = (function () {
     };
     p.addJewll = function (j) {
         this.jewlls.push(j);
+        this.dirtyFlag = true;
     };
-    __decorate([
-        Catche
-    ], p, "getFightPower", null);
     return Equipment;
 }());
 egret.registerClass(Equipment,'Equipment');
@@ -100,16 +102,14 @@ var Jewll = (function () {
     function Jewll() {
         this.points = 10;
         this.fightPowerCache = null;
+        this.dirtyFlag = false;
     }
     var d = __define,c=Jewll,p=c.prototype;
     p.getFightPower = function () {
         this.fightPowerCache = this.points;
         return this.points;
     };
-    __decorate([
-        Catche
-    ], p, "getFightPower", null);
     return Jewll;
 }());
 egret.registerClass(Jewll,'Jewll');
-//# sourceMappingURL=User.js.map
+//# sourceMappingURL=RPGUser.js.map

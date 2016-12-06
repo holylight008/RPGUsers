@@ -101,6 +101,53 @@ var Main = (function (_super) {
      * Create a game scene
      */
     p.createGameScene = function () {
+        var stageW = this.stage.stageWidth;
+        var stageH = this.stage.stageHeight;
+        var newMap = new MainMap();
+        newMap.x = 0;
+        newMap.y = 0;
+        this.addChild(newMap);
+        var Character = new Player();
+        Character.x = 0;
+        Character.y = 0;
+        this.addChild(Character);
+        var taskService = TaskService.getInstance();
+        var task_0 = new Task("task_0", "npc_0", "npc_1", Task.ACCEPTABLE, new NPCTalkTaskCondition(), 1, "null", "task_1");
+        var task_1 = new Task("task_1", "npc_1", "npc_1", Task.UNACCEPTALBE, new KillMonsterTaskCondition(), 10, "pig_png", "null");
+        var taskPanel = new TaskPanel();
+        taskPanel.x = 640;
+        taskPanel.y = 0;
+        this.addChild(taskPanel);
+        var monsterButton = new MonsterButton("pig_png");
+        monsterButton.x = 640;
+        monsterButton.y = 500;
+        this.addChild(monsterButton);
+        var dialogPanel = DialogPanel.getInstance();
+        dialogPanel.x = 200;
+        dialogPanel.y = 200;
+        this.addChild(dialogPanel);
+        dialogPanel.visible = false;
+        var npc_0 = new NPC("npc_0", "npc_0_png");
+        npc_0.x = 128;
+        npc_0.y = 128;
+        this.addChild(npc_0);
+        var npc_1 = new NPC("npc_1", "npc_1_png");
+        npc_1.x = 576;
+        npc_1.y = 576;
+        this.addChild(npc_1);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, function (evt) {
+            var startTile = new tile();
+            startTile.x = Math.floor(Character.x / ONETILESIZE);
+            startTile.y = Math.floor(Character.y / ONETILESIZE);
+            var endTile = new tile();
+            endTile.x = Math.floor(evt.stageX / ONETILESIZE);
+            endTile.y = Math.floor(evt.stageY / ONETILESIZE);
+            // console.log("start:("+startTile.x+","+startTile.y+")"+"end:("+endTile.x+","+endTile.y+")");
+            if (newMap.findWay(startTile, endTile)) {
+                var path = newMap.getPath();
+                Character.Macine.ChangeState(new MoveState(Character, path));
+            }
+        }, this);
         var user = new User();
         var hero = new Hero();
         var equipment = new Equipment();
@@ -108,8 +155,8 @@ var Main = (function (_super) {
         equipment.addJewll(jewll);
         hero.addEquipment(equipment);
         user.addHero(hero);
-        var x = user.getFightPower();
-        console.log(x);
+        user.getFightPower();
+        user.getFightPower();
     };
     return Main;
 }(egret.DisplayObjectContainer));
