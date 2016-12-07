@@ -39,6 +39,7 @@ class User{
     public addHero(hero:Hero){
         this.heros.push(hero);
         this.dirtyFlag=true;
+        hero.user=this;
     }
 }
 class Hero{
@@ -50,11 +51,13 @@ class Hero{
     like=false;
     fightPowerCache:number;
     dirtyFlag:boolean;
+    user:User;
     equipments:Equipment[];
     constructor(){
         this.equipments=new Array();
         this.dirtyFlag=false;
     }
+    @Catche
     public getFightPower():number{
         var result=0;
         this.equipments.forEach((equipment)=>{
@@ -67,6 +70,8 @@ class Hero{
     public addEquipment(e:Equipment){
         this.equipments.push(e);
         this.dirtyFlag=true;
+        e.hero=this;
+        this.user.dirtyFlag=true;
     }
 }
 class Equipment{
@@ -74,10 +79,12 @@ class Equipment{
     fightPowerCache:number;
     dirtyFlag:boolean;
     jewlls:Jewll[];
+    hero:Hero;
     constructor(){
         this.jewlls=new Array();
         this.dirtyFlag=false;
     }
+    @Catche
     public getFightPower():number{
         var result=0;
         this.jewlls.forEach((jewll)=>{
@@ -90,16 +97,20 @@ class Equipment{
     public addJewll(j:Jewll){
         this.jewlls.push(j);
         this.dirtyFlag=true;
+        j.equip=this;
+        this.hero.dirtyFlag=true;
     }
 }
 class Jewll{
     fightPowerCache:number;
     dirtyFlag:boolean;
     points=10;
+    equip:Equipment;
     constructor(){
         this.fightPowerCache=null;
         this.dirtyFlag=false;
     }
+    @Catche
     public getFightPower():number{
         this.fightPowerCache=this.points;
         return this.points;
